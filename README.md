@@ -54,6 +54,7 @@ Relasi: Setiap produk memiliki banyak properti (hasMany).
    {  
      "name": "Produk A",  
      "description": "Deskripsi Produk A",  
+     "price" : 50000, 
      "properties": [  
        { "property_name": "Warna", "property_value": "Merah" },  
        { "property_name": "Ukuran", "property_value": "L" }  
@@ -66,10 +67,11 @@ Relasi: Setiap produk memiliki banyak properti (hasMany).
    ```
    {  
      "name": "Produk A",  
-     "description": "Deskripsi Produk A",  
+     "description": "Deskripsi Produk A",
+     "price" : 50000,  
      "properties": [  
        { "property_name": "Warna", "property_value": "Biru" },  
-       { "property_name": "Harga", "property_value": "5000" }  
+       { "property_name": "Berat", "property_value": "400 Gram" }  
      ]  
    }
    ```

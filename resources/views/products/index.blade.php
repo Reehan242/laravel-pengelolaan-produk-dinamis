@@ -3,14 +3,23 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Daftar Produk</title>
     {{-- Bootstrap CSS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1>Daftar Produk</h1>
+    {{-- Navbar --}}
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a href="/" class="navbar-brand">Product Warehouse</a>
+        </div>
+    </nav>
+
+    {{-- Konten Utama --}}
+    <div class="container mt-3">
+        <h1 class="text-center mb-3">Daftar Produk</h1>
         <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Tambah
             Produk</a>
 
@@ -20,6 +29,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ $product->name }}</h5>
+                            <h6 class="card-subtitle text-body-secondary mb-2">Rp {{ $product->price }}</h6>
                             <p class="card-text">{{ $product->description }}</p>
                             @if ($product->properties->count())
                                 <ul class="list-group">
@@ -35,6 +45,7 @@
                             <button class="btn btn-sm btn-warning edit-product-btn"
                                 data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}"
                                 data-product-description="{{ $product->description }}"
+                                data-product-price="{{ $product->price }}"
                                 data-product-properties='@json($product->properties)'>
                                 Edit Product
                             </button>
@@ -48,7 +59,7 @@
     {{-- Modal Form Tambah Produk  --}}
     <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-md">
             <form id="addProductForm">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -64,6 +75,11 @@
                             <label for="description" class="form-label">Deskripsi</label>
                             <textarea class="form-control" id="description" name="description"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Harga</label>
+                            <input type="number" class="form-control" id="price" step="1" name="price">
+                        </div>
+
                         {{-- Container untuk properti dinamis  --}}
                         <div id="propertiesContainer">
                             <h6>Properti Dinamis</h6>
@@ -95,10 +111,10 @@
         </div>
     </div>
 
-    {{-- Edit Product Modal  --}}
+    {{-- Modal Edit Product  --}}
     <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg ">
             <form id="editProductForm">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -115,6 +131,12 @@
                             <label for="editProductDescription" class="form-label">Deskripsi Produk</label>
                             <textarea class="form-control" id="editProductDescription" name="description"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="editProductPrice" class="form-label">Harga</label>
+                            <input type="number" class="form-control" id="editProductPrice" step="1"
+                                name="price">
+                        </div>
+
                         <h6>Properti Produk</h6>
                         <div id="editPropertiesContainer">
                             {{-- Properti-properti akan dimuat di sini --}}
@@ -138,7 +160,6 @@
 
     {{-- Script untuk form dan ajax pada edit dan create --}}
     <script>
-
         // Menambahkan baris properti dinamis
         $(document).on('click', '#addPropertyBtn', function() {
             let index = $('#propertiesContainer .property-item').length;
@@ -183,19 +204,24 @@
 
         // Ketika tombol "Edit Product" diklik
         $(document).on('click', '.edit-product-btn', function() {
+            // data pada button edit yang dikirim di assign ke variable
             var productId = $(this).data('product-id');
             var productName = $(this).data('product-name');
             var productDescription = $(this).data('product-description');
+            var productPrice = $(this).data('product-price');
             var productProperties = $(this).data('product-properties'); // Array properti
 
+            // Assign value modal edit pake data variable yang sudah di definisikan 
             $('#editProductId').val(productId);
             $('#editProductName').val(productName);
             $('#editProductDescription').val(productDescription);
+            $('#editProductPrice').val(productPrice);
 
             // Bersihkan container properti sebelumnya
             $('#editPropertiesContainer').empty();
 
             if (productProperties && productProperties.length > 0) {
+                // Untuk mengisi kontainer dari properties list
                 $.each(productProperties, function(index, prop) {
                     var html = '<div class="property-item mb-2" data-property-id="' + prop.id + '">' +
                         '<div class="row">' +

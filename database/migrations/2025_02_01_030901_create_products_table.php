@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name'); // Nama produk
             $table->text('description')->nullable(); // Deskripsi produk
+            $table->integer('price')->nullable(); // Harga Produk 
             $table->timestamps();
         });
     }

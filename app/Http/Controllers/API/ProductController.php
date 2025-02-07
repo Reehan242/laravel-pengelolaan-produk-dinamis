@@ -28,20 +28,22 @@ class ProductController extends Controller
     // Menambahkan produk baru beserta properti dinamisnya
     public function store(Request $request)
     {
+        // validasi request tambah data 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'price' => 'nullable|integer',
             'properties' => 'nullable|array',
             'properties.*.property_name' => 'required_with:properties|string|max:255',
             'properties.*.property_value' => 'required_with:properties|string|max:255',
         ]);
-
+        
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // Membuat produk baru
-        $product = Product::create($request->only(['name', 'description']));
+        $product = Product::create($request->only(['name', 'description','price']));
 
         // Jika properti dikirimkan
         if ($request->has('properties')) {
@@ -56,6 +58,7 @@ class ProductController extends Controller
     // Mengedit properti dinamis suatu produk
     public function updateProperty(Request $request, $productId, $propertyId)
     {
+        // validasi request saat update/edit property
         $validator = Validator::make($request->all(), [
             'property_name' => 'required|string|max:255',
             'property_value' => 'required|string|max:255',
@@ -89,6 +92,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'price' => 'nullable|integer',
             'properties' => 'nullable|array',
             'properties.*.id' => 'nullable|exists:product_properties,id',
             'properties.*.property_name' => 'required_with:properties|string|max:255',
@@ -100,7 +104,7 @@ class ProductController extends Controller
         }
 
         $product = Product::findOrFail($id);
-        $product->update($request->only(['name', 'description']));
+        $product->update($request->only(['name', 'description', 'price']));
 
         // Proses properti-properti
         if ($request->has('properties')) {

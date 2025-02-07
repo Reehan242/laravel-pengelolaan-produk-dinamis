@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Route;
 
 class ProductController extends Controller
 {
@@ -37,13 +38,13 @@ class ProductController extends Controller
             'properties.*.property_name' => 'required_with:properties|string|max:255',
             'properties.*.property_value' => 'required_with:properties|string|max:255',
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
         // Membuat produk baru
-        $product = Product::create($request->only(['name', 'description','price']));
+        $product = Product::create($request->only(['name', 'description', 'price']));
 
         // Jika properti dikirimkan
         if ($request->has('properties')) {
@@ -137,6 +138,11 @@ class ProductController extends Controller
         $product_name = $product->name;
         $product->delete();
 
-        return response()->json( $product_name . ' has been deleted');
+
+        if (Route::currentRouteName() == 'delete-redirect') {
+            return response()->json($product_name . ' has been deleted');
+        } else {
+            return redirect('/');
+        }
     }
 }

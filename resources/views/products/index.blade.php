@@ -49,6 +49,11 @@
                                 data-product-properties='@json($product->properties)'>
                                 Edit Product
                             </button>
+                            <form action="/api/products/{{ $product->id }}" method="POST" class="d-inline">
+                                @method('delete')
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-danger" id="btn-submit-delete" onclick="confirmDelete()">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -119,7 +124,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editProductModalLabel">Edit Produk</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="product_id" id="editProductId">
@@ -155,10 +161,12 @@
 
     {{--  Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- Sweetalert2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {{-- jQuery (untuk memudahkan manipulasi DOM)  --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    {{-- Script untuk form dan ajax pada edit dan create --}}
+    {{-- Script untuk form dan ajax pada edit dan create serta alert --}}
     <script>
         // Menambahkan baris properti dinamis
         $(document).on('click', '#addPropertyBtn', function() {
@@ -295,6 +303,7 @@
                 }
             });
         });
+        
     </script>
 </body>
 
